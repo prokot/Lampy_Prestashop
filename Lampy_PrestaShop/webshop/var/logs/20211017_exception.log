@@ -1,0 +1,1 @@
+*ERROR* 	v1.7.7.8	2021/10/17 - 13:58:42: Db-&gt;executeS() must be used only with select, show, explain or describe queries at line 607 in file classes/db/Db.php

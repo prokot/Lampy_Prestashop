@@ -1,0 +1,46 @@
+version: '3.3'
+
+services:
+  db:
+    image: mysql:5.7
+    volumes:
+      - ./db-dumps:/docker-entrypoint-initdb.d
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: lights-shop
+      
+
+  phpmyadmin:
+      image: phpmyadmin/phpmyadmin
+      ports:
+        -  8080:80
+      env_file:
+        - .env
+      environment:
+        PMA_HOST: db
+      depends_on:
+        - db
+
+
+  prestashop:
+    depends_on:
+      - db
+    image: prestassl
+    ports:
+      - 80:80
+      - 443:443
+    restart: always
+    environment:
+      PS_INSTALL_AUTO: 0
+      PS_ERASE_DB: 0
+      DB_SERVER: db
+      DB_USER: root
+      DB_PASSWD: root
+      DB_NAME: lights-shop
+      PS_DEV_MODE: 0
+      PS_DOMAIN: localhost:80
+      ALLOW_OVERRIDE: 1
+    volumes:
+      - ./webshop:/var/www/html
+      - ./ssl/:/etc/apache2/sites-available
